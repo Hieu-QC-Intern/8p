@@ -3,12 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giải Cầu Lông Đồng Đội 10 Người</title>
+    <title>Giải Cầu Lông Đồng Đội 10 Người - Trọng Tài Bấm Điểm</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f6f9; color: #333; padding: 15px; margin: 0; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #1e3a8a; margin-bottom: 5px; font-size: 24px; }
+        .container { max-width: 840px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #1e3a8a; margin-bottom: 5px; font-size: 24px; text-transform: uppercase; }
         h2 { color: #2563eb; border-bottom: 2px solid #e5e7eb; padding-bottom: 5px; font-size: 18px; margin-top: 25px; }
+        h3 { color: #1e3a8a; font-size: 15px; margin-top: 15px; margin-bottom: 8px; }
+        
+        /* Bảng điều khiển bấm điểm */
+        .scoreboard-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #0f172a; padding: 20px; border-radius: 10px; margin-top: 15px; text-align: center; color: white; }
+        .score-btn { width: 100%; padding: 15px; font-size: 20px; font-weight: bold; color: white; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s; margin-top: 10px; }
+        .btn-team1 { background-color: #ef4444; } /* Đỏ */
+        .btn-team1:hover { background-color: #dc2626; }
+        .btn-team2 { background-color: #10b981; } /* Xanh lá */
+        .btn-team2:hover { background-color: #059669; }
+        .display-total { font-size: 48px; font-weight: bold; font-family: monospace; margin: 5px 0; color: #f8fafc; }
+        .current-match-info { grid-column: 1 / span 2; background: #1e293b; padding: 8px; border-radius: 6px; font-size: 14px; color: #38bdf8; font-weight: bold; }
+
         .setup-section { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
         .team-box { background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; }
         .team-box h3 { margin: 0 0 10px 0; color: #1e40af; font-size: 16px; }
@@ -17,24 +29,31 @@
         .input-group input { flex: 1; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 14px; }
         .btn-apply { display: block; width: 100%; padding: 10px; background: #2563eb; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; margin-top: 10px; }
         .btn-apply:hover { background: #1d4ed8; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; overflow-x: auto; display: block; }
-        th, td { border: 1px solid #cbd5e1; padding: 10px; text-align: center; min-width: 90px; }
+        
+        .table-wrapper { overflow-x: auto; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 700px; }
+        th, td { border: 1px solid #cbd5e1; padding: 10px; text-align: center; }
         th { background-color: #1e3a8a; color: white; }
+        tr.active-row { background-color: #fef08a !important; font-weight: bold; } /* Hàng đang đánh sẽ sáng lên */
         tr:nth-child(even) { background-color: #f8fafc; }
         .target-score { font-weight: bold; color: #dc2626; background: #fef2f2; border-radius: 4px; padding: 2px 6px; }
-        .score-input { width: 45px; padding: 5px; text-align: center; font-weight: bold; font-size: 14px; border: 1px solid #94a3b8; border-radius: 4px; }
+        .score-input { width: 50px; padding: 5px; text-align: center; font-weight: bold; font-size: 14px; border: 1px solid #94a3b8; border-radius: 4px; background: #fff; }
         .total-row { background-color: #eff6ff !important; font-weight: bold; font-size: 16px; color: #1e3a8a; }
-        .badge { display: inline-block; padding: 3px 6px; border-radius: 4px; font-size: 12px; font-weight: bold; color: white; }
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; color: white; min-width: 95px; }
         .badge-namnu { background-color: #ec4899; }
         .badge-nam { background-color: #3b82f6; }
-        .badge-nu { background-color: #a855f7; }
+        
+        .rule-section { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-top: 15px; font-size: 14px; line-height: 1.6; }
+        .rule-section ul { margin-top: 5px; padding-left: 20px; }
+        .rule-section li { margin-bottom: 6px; }
+        .highlight-text { font-weight: bold; color: #b91c1c; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>🏆 GIẢI CẦU LÔNG ĐỒNG ĐỘI</h1>
-    <p style="text-align: center; margin: 0 0 20px 0; color: #64748b; font-size: 14px;">Luật tích lũy điểm gối đầu - Chạm 210 điểm</p>
+    <p style="text-align: center; margin: 0 0 20px 0; color: #64748b; font-size: 14px;">Mỗi người đánh đúng 4 trận - Xen kẽ Đôi Nam / Nam Nữ</p>
 
     <h2>1. NHẬP TÊN THÀNH VIÊN TRÊN SÂN</h2>
     <div class="setup-section">
@@ -57,84 +76,146 @@
     </div>
     <button class="btn-apply" onclick="updateNames()">Cập Nhật Tên Vào Lịch Đấu</button>
 
-    <h2>2. LỊCH THI ĐẤU & BẢNG ĐIỂM TỰ ĐỘNG</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Trận</th>
-                <th>Thể thức</th>
-                <th>Đội 1</th>
-                <th>Đội 2</th>
-                <th>Mốc Đích</th>
-                <th>Điểm Đ1</th>
-                <th>Điểm Đ2</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><b>1</b></td><td><span class="badge badge-namnu">Đôi Nam Nữ</span></td><td id="t1_d1"></td><td id="t1_d2"></td><td><span class="target-score">21</span></td>
-                <td><input type="number" class="score-input" id="s1_1" oninput="calculateTotal()"></td><td><input type="number" class="score-input" id="s1_2" oninput="calculateTotal()"></td>
-            </tr>
-            <tr>
-                <td><b>2</b></td><td><span class="badge badge-nam">Nam vs NamNữ</span></td><td id="t2_d1"></td><td id="t2_d2"></td><td><span class="target-score">42</span></td>
-                <td><input type="number" class="score-input" id="s2_1" oninput="calculateTotal()"></td><td><input type="number" class="score-input" id="s2_2" oninput="calculateTotal()"></td>
-            </tr>
-            <tr>
-                <td><b>3</b></td><td><span class="badge badge-namnu">Đôi Nam Nữ</span></td><td id="t3_d1"></td><td id="t3_d2"></td><td><span class="target-score">63</span></td>
-                <td><input type="number" class="score-input" id="s3_1" oninput="calculateTotal()"></td><td><input type="number" class="score-input" id="s3_2" oninput="calculateTotal()"></td>
-            </tr>
-            <tr>
-                <td><b>4</b></td><td><span class="badge badge-nam">Nam vs NamNữ</span></td><td id="t4_d1"></td><td id="t4_d2"></td><td><span class="target-score">84</span></td>
-                <td><input type="number" class="score-input" id="s4_1" oninput="calculateTotal()"></td><td><input type="number" class="score-input" id="s4_2" oninput="calculateTotal()"></td>
-            </tr>
-            <tr>
-                <td><b>5</b></td><td><span class="badge badge-namnu">Đôi Nam Nữ</span></td><td id="t5_d1"></td><td id="t5_d2"></td><td><span class="target-score">105</span></td>
-                <td><input type="number" class="score-input" id="s5_1" oninput="calculateTotal()"></td><td><input type="number" class="score-input" id="s5_2" oninput="calculateTotal()"></td>
-            </tr>
-            <tr>
-                <td><b>6</b></td><td><span class="badge badge-nam">Nam vs NamNữ</span></td><td id="t6_d1"></td><td id="t6_d2"></td><td><span class="target-score">126</span></td>
-                <td><input type="number" class="score-input" id="s6_1" oninput="calculateTotal()"></td><td><input type="number" class="score-input" id="s6_2" oninput="calculateTotal()"></td>
-            </tr>
-            <tr>
-                <td><b>7</b></td><td><span class="badge badge-nu">Hỗn hợp</span></td><td id="t7_d1"></td><td id="t7_d2"></td><td><span class="target-score">147</span></td>
-                <td><input type="number" class="score-input" id="s7_1" oninput="calculateTotal()"></td><td><input type="number" class="score-input" id="s7_2" oninput="calculateTotal()"></td>
-            </tr>
-            <tr>
-                <td><b>8</b></td><td><span class="badge badge-nam">Đôi Nam Thuần</span></td><td id="t8_d1"></td><td id="t8_d2"></td><td><span class="target-score">168</span></td>
-                <td><input type="number" class="score-input" id="s8_1" oninput="calculateTotal()"></td><td><input type="number" class="score-input" id="s8_2" oninput="calculateTotal()"></td>
-            </tr>
-            <tr>
-                <td><b>9</b></td><td><span class="badge badge-nam">Đôi Nam Thuần</span></td><td id="t9_d1"></td><td id="t9_d2"></td><td><span class="target-score">189</span></td>
-                <td><input type="number" class="score-input" id="s9_1" oninput="calculateTotal()"></td><td><input type="number" class="score-input" id="s9_2" oninput="calculateTotal()"></td>
-            </tr>
-            <tr>
-                <td><b>10</b></td><td><span class="badge badge-nam">CHUNG KẾT NAM</span></td><td id="t10_d1"></td><td id="t10_d2"></td><td><span class="target-score">210</span></td>
-                <td><input type="number" class="score-input" id="s10_1" oninput="calculateTotal()"></td><td><input type="number" class="score-input" id="s10_2" oninput="calculateTotal()"></td>
-            </tr>
-            <tr class="total-row">
-                <td colspan="5">TỔNG ĐIỂM HIỆN TẠI (Mục tiêu 210)</td>
-                <td id="total_1">0</td>
-                <td id="total_2">0</td>
-            </tr>
-        </tbody>
-    </table>
+    <h2>2. BÀNG BẤM ĐIỂM TRÊN SÂN (SCOREBOARD)</h2>
+    <div class="scoreboard-panel">
+        <div class="current-match-info" id="live_match_status">Đang tải trận đấu...</div>
+        <div>
+            <div style="color: #fca5a5; font-weight: bold;">TỔNG ĐIỂM ĐỘI 1</div>
+            <div class="display-total" id="live_total_1">0</div>
+            <button class="score-btn btn-team1" onclick="pressScore(1)">+1 ĐỘI 1</button>
+        </div>
+        <div>
+            <div style="color: #6ee7b7; font-weight: bold;">TỔNG ĐIỂM ĐỘI 2</div>
+            <div class="display-total" id="live_total_2">0</div>
+            <button class="score-btn btn-team2" onclick="pressScore(2)">+1 ĐỘI 2</button>
+        </div>
+    </div>
+
+    <h2>3. LỊCH THI ĐẤU XEN KẼ & CHI TIẾT ĐIỂM</h2>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Trận</th>
+                    <th>Thể thức</th>
+                    <th>Đội 1 vào sân</th>
+                    <th>Đội 2 vào sân</th>
+                    <th>Mốc Đích</th>
+                    <th>Điểm Đ1</th>
+                    <th>Điểm Đ2</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="row_1">
+                    <td><b>1</b></td><td><span class="badge badge-namnu">Đôi Nam Nữ</span></td><td id="t1_d1"></td><td id="t1_d2"></td><td><span class="target-score">21</span></td>
+                    <td><input type="number" class="score-input" id="s1_1" value="0" oninput="calculateTotal()"></td><td><input type="number" class="score-input" id="s1_2" value="0" oninput="calculateTotal()"></td>
+                </tr>
+                <tr id="row_2">
+                    <td><b>2</b></td><td><span class="badge badge-nam">Đôi Nam Thuần</span></td><td id="t2_d1"></td><td id="t2_d2"></td><td><span class="target-score">42</span></td>
+                    <td><input type="number" class="score-input" id="s2_1" value="0" oninput="calculateTotal()"></td><td><input type="number" class="score-input" id="s2_2" value="0" oninput="calculateTotal()"></td>
+                </tr>
+                <tr id="row_3">
+                    <td><b>3</b></td><td><span class="badge badge-namnu">Đôi Nam Nữ</span></td><td id="t3_d1"></td><td id="t3_d2"></td><td><span class="target-score">63</span></td>
+                    <td><input type="number" class="score-input" id="s3_1" value="0" oninput="calculateTotal()"></td><td><input type="number" class="score-input" id="s3_2" value="0" oninput="calculateTotal()"></td>
+                </tr>
+                <tr id="row_4">
+                    <td><b>4</b></td><td><span class="badge badge-nam">Đôi Nam Thuần</span></td><td id="t4_d1"></td><td id="t4_d2"></td><td><span class="target-score">84</span></td>
+                    <td><input type="number" class="score-input" id="s4_1" value="0" oninput="calculateTotal()"></td><td><input type="number" class="score-input" id="s4_2" value="0" oninput="calculateTotal()"></td>
+                </tr>
+                <tr id="row_5">
+                    <td><b>5</b></td><td><span class="badge badge-namnu">Đôi Nam Nữ</span></td><td id="t5_d1"></td><td id="t5_d2"></td><td><span class="target-score">105</span></td>
+                    <td><input type="number" class="score-input" id="s5_1" value="0" oninput="calculateTotal()"></td><td><input type="number" class="score-input" id="s5_2" value="0" oninput="calculateTotal()"></td>
+                </tr>
+                <tr id="row_6">
+                    <td><b>6</b></td><td><span class="badge badge-nam">Đôi Nam Thuần</span></td><td id="t6_d1"></td><td id="t6_d2"></td><td><span class="target-score">126</span></td>
+                    <td><input type="number" class="score-input" id="s6_1" value="0" oninput="calculateTotal()"></td><td><input type="number" class="score-input" id="s6_2" value="0" oninput="calculateTotal()"></td>
+                </tr>
+                <tr id="row_7">
+                    <td><b>7</b></td><td><span class="badge badge-namnu">Đôi Nam Nữ</span></td><td id="t7_d1"></td><td id="t7_d2"></td><td><span class="target-score">147</span></td>
+                    <td><input type="number" class="score-input" id="s7_1" value="0" oninput="calculateTotal()"></td><td><input type="number" class="score-input" id="s7_2" value="0" oninput="calculateTotal()"></td>
+                </tr>
+                <tr id="row_8">
+                    <td><b>8</b></td><td><span class="badge badge-nam">Đôi Nam Thuần</span></td><td id="t8_d1"></td><td id="t8_d2"></td><td><span class="target-score">168</span></td>
+                    <td><input type="number" class="score-input" id="s8_1" value="0" oninput="calculateTotal()"></td><td><input type="number" class="score-input" id="s8_2" value="0" oninput="calculateTotal()"></td>
+                </tr>
+                <tr id="row_9">
+                    <td><b>9</b></td><td><span class="badge badge-namnu">Đôi Nam Nữ</span></td><td id="t9_d1"></td><td id="t9_d2"></td><td><span class="target-score">189</span></td>
+                    <td><input type="number" class="score-input" id="s9_1" value="0" oninput="calculateTotal()"></td><td><input type="number" class="score-input" id="s9_2" value="0" oninput="calculateTotal()"></td>
+                </tr>
+                <tr id="row_10">
+                    <td><b>10</b></td><td><span class="badge badge-nam">CHUNG KẾT NAM</span></td><td id="t10_d1"></td><td id="t10_d2"></td><td><span class="target-score">210</span></td>
+                    <td><input type="number" class="score-input" id="s10_1" value="0" oninput="calculateTotal()"></td><td><input type="number" class="score-input" id="s10_2" value="0" oninput="calculateTotal()"></td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="5">TỔNG ĐIỂM HIỆN TẠI (Mục tiêu 210)</td>
+                    <td id="total_1">0</td>
+                    <td id="total_2">0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>4. LUẬT BẤM ĐIỂM NHANH TRÊN SÂN</h2>
+    <div class="rule-section">
+        <ul>
+            <li><span class="highlight-text">Cơ chế gối đầu:</span> Điểm số trên bảng điện tử lớn là điểm tích lũy liên tục[cite: 1, 2]. Điểm của từng trận đấu nhỏ bên dưới sẽ tự tăng lên tương ứng khi bạn bấm nút.</li>
+            <li>Khi một đội chạm mốc đích của trận đó (21, 42, 63,...)[cite: 1, 2], màn hình sẽ chặn không cho bấm tiếp và hiện popup yêu cầu dừng trận. Hãy bấm <span class="highlight-text">"OK"</span> trên popup để xác nhận và tự động mở khóa chuyển sang trận kế tiếp.</li>
+        </ul>
+    </div>
 </div>
 
 <script>
+    let currentMatch = 1; // Khởi tạo bắt đầu từ trận số 1
+    let isMatchLocked = false; // Trạng thái khóa khi chờ bấm OK popup
+
     function updateNames() {
         const d1 = { n1: document.getElementById('d1_n1').value, m1: document.getElementById('d1_m1').value, m2: document.getElementById('d1_m2').value, m3: document.getElementById('d1_m3').value, m4: document.getElementById('d1_m4').value };
         const d2 = { n2: document.getElementById('d2_n2').value, n3: document.getElementById('d2_n3').value, m1: document.getElementById('d2_m1').value, m2: document.getElementById('d2_m2').value, m3: document.getElementById('d2_m3').value };
 
         document.getElementById('t1_d1').innerHTML = d1.n1 + " + " + d1.m1; document.getElementById('t1_d2').innerHTML = d2.n2 + " + " + d2.m1;
-        document.getElementById('t2_d1').innerHTML = d1.m2 + " + " + d1.m3; document.getElementById('t2_d2').innerHTML = d2.n3 + " + " + d2.m2;
-        document.getElementById('t3_d1').innerHTML = d1.n1 + " + " + d1.m4; document.getElementById('t3_d2').innerHTML = d2.n2 + " + " + d2.m3;
-        document.getElementById('t4_d1').innerHTML = d1.m1 + " + " + d1.m2; document.getElementById('t4_d2').innerHTML = d2.n3 + " + " + d2.m1;
+        document.getElementById('t2_d1').innerHTML = d1.m2 + " + " + d1.m3; document.getElementById('t2_d2').innerHTML = d2.m2 + " + " + d2.m3;
+        document.getElementById('t3_d1').innerHTML = d1.n1 + " + " + d1.m4; document.getElementById('t3_d2').innerHTML = d2.n3 + " + " + d2.m1;
+        document.getElementById('t4_d1').innerHTML = d1.m1 + " + " + d1.m2; document.getElementById('t4_d2').innerHTML = d2.m2 + " + " + d2.m3;
         document.getElementById('t5_d1').innerHTML = d1.n1 + " + " + d1.m3; document.getElementById('t5_d2').innerHTML = d2.n2 + " + " + d2.m2;
-        document.getElementById('t6_d1').innerHTML = d1.m1 + " + " + d1.m4; document.getElementById('t6_d2').innerHTML = d2.n3 + " + " + d2.m3;
-        document.getElementById('t7_d1').innerHTML = d1.n1 + " + " + d1.m2; document.getElementById('t7_d2').innerHTML = d2.n2 + " + " + d2.n3;
+        document.getElementById('t6_d1').innerHTML = d1.m1 + " + " + d1.m4; document.getElementById('t6_d2').innerHTML = d2.m1 + " + " + d2.m3;
+        document.getElementById('t7_d1').innerHTML = d1.n1 + " + " + d1.m2; document.getElementById('t7_d2').innerHTML = d2.n3 + " + " + d2.m2;
         document.getElementById('t8_d1').innerHTML = d1.m1 + " + " + d1.m3; document.getElementById('t8_d2').innerHTML = d2.m1 + " + " + d2.m2;
-        document.getElementById('t9_d1').innerHTML = d1.m2 + " + " + d1.m4; document.getElementById('t9_d2').innerHTML = d2.m2 + " + " + d2.m3;
-        document.getElementById('t10_d1').innerHTML = d1.m3 + " + " + d1.m4; document.getElementById('t10_d2').innerHTML = d2.m1 + " + " + d2.m3;
+        document.getElementById('t9_d1').innerHTML = d1.m4 + " + " + d1.m2; document.getElementById('t9_d2').innerHTML = d2.n2 + " + " + d2.m3;
+        document.getElementById('t10_d1').innerHTML = d1.m3 + " + " + d1.m4; document.getElementById('t10_d2').innerHTML = d2.n3 + " + " + d2.m1;
+        
+        updateRowHighlight();
+    }
+
+    function updateRowHighlight() {
+        // Xóa highlight ở tất cả các dòng
+        for (let i = 1; i <= 10; i++) {
+            document.getElementById(`row_${i}`).classList.remove('active-row');
+        }
+        // Thêm highlight vào dòng trận đấu hiện tại
+        if (currentMatch <= 10) {
+            const activeRow = document.getElementById(`row_${currentMatch}`);
+            activeRow.classList.add('active-row');
+            
+            // Cập nhật thông tin text hiển thị trên bảng điều khiển scoreboard
+            const typeText = activeRow.cells[1].innerText;
+            const team1Players = activeRow.cells[2].innerText;
+            const team2Players = activeRow.cells[3].innerText;
+            document.getElementById('live_match_status').innerText = `TRẬN HIỆN TẠI (${currentMatch}/10): ${typeText} | ${team1Players} vs ${team2Players}`;
+        } else {
+            document.getElementById('live_match_status').innerText = "GIẢI ĐẤU ĐÃ KẾT THÚC! 🏆";
+        }
+    }
+
+    function pressScore(team) {
+        if (currentMatch > 10 || isMatchLocked) return;
+
+        // Tăng điểm của trận hiện tại trong ô input
+        const inputId = `s${currentMatch}_${team}`;
+        const currentInputValue = parseInt(document.getElementById(inputId).value) || 0;
+        document.getElementById(inputId).value = currentInputValue + 1;
+
+        // Tính toán lại tổng điểm toàn giải
+        calculateTotal();
     }
 
     function calculateTotal() {
@@ -144,11 +225,34 @@
             let s2 = parseInt(document.getElementById(`s${i}_2`).value) || 0;
             total1 += s1; total2 += s2;
         }
+        
+        // Cập nhật điểm hiển thị lớn trên Scoreboard và dòng tổng số bên dưới bảng
         document.getElementById('total_1').innerText = total1;
         document.getElementById('total_2').innerText = total2;
-        
-        if(total1 >= 210) { alert("Chúc mừng ĐỘI 1 đã chạm mốc 210 và giành CHIẾN THẮNG CHUNG CUỘC! 🏆"); }
-        else if(total2 >= 210) { alert("Chúc mừng ĐỘI 2 đã chạm mốc 210 và giành CHIẾN THẮNG CHUNG CUỘC! 🏆"); }
+        document.getElementById('live_total_1').innerText = total1;
+        document.getElementById('live_total_2').innerText = total2;
+
+        if (currentMatch <= 10) {
+            const targetScore = currentMatch * 21; // Mốc đích tự động: 21, 42, 63...[cite: 1, 2]
+            
+            // Nếu có một đội chạm mốc đích của trận hiện tại
+            if (total1 >= targetScore || total2 >= targetScore) {
+                isMatchLocked = true; // Khóa không cho bấm điểm tiếp tục
+                
+                setTimeout(() => {
+                    if (currentMatch === 10) {
+                        const winner = total1 >= 210 ? "ĐỘI 1" : "ĐỘI 2";
+                        alert(`🏆 XONG! TRẬN CHUNG KẾT ĐÃ KẾT THÚC!\nChúc mừng ${winner} đã đạt mốc 210 và giành chiến thắng chung cuộc toàn giải! 🎉`);
+                        currentMatch = 11;
+                    } else {
+                        alert(`🛑 STOP! Trận ${currentMatch} đã chạm mốc ${targetScore} điểm!\n\nVui lòng đổi người, bấm OK để mở khóa đếm điểm cho Trận ${currentMatch + 1}.`);
+                        currentMatch++; // Chuyển sang trận tiếp theo
+                        isMatchLocked = false; // Mở khóa sau khi nhấn OK
+                        updateRowHighlight();
+                    }
+                }, 50);
+            }
+        }
     }
     
     window.onload = updateNames;
