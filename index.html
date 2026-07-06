@@ -275,20 +275,33 @@
         if(document.getElementById('live_total_1')) document.getElementById('live_total_1').innerText = total1;
         if(document.getElementById('live_total_2')) document.getElementById('live_total_2').innerText = total2;
 
-        if (currentMatch <= TOTAL_MATCHES) {
+        // Khi đang nhận/áp dữ liệu remote từ Firebase (kể cả echo lại dữ liệu do chính mình vừa ghi),
+        // chỉ cập nhật hiển thị tổng điểm, KHÔNG chạy lại logic check khoá trận / tăng trận / alert.
+        // Nếu không chặn chỗ này, mỗi lần ghi Firebase sẽ bị listener bắt lại và chạy trùng logic bên dưới,
+        // gây tăng trận đúp + hiện sai số trận/mốc điểm trong popup.
+        if (isApplyingRemoteData) return;
+
+        // Đã khoá rồi (đang chờ người dùng bấm OK ở popup trước) thì không tạo thêm timeout trùng nữa.
+        if (isMatchLocked) return;
+
+        if (currentMatch <= TOTAL_MATCHES && !isMatchLocked) {
             const targetScore = currentMatch * 21;
             if (total1 >= targetScore || total2 >= targetScore) {
                 isMatchLocked = true;
+                // Chốt cứng trận/mốc điểm tại đúng thời điểm khoá, tránh bug đọc nhầm currentMatch
+                // đã bị thay đổi bởi lần gọi khác trước khi setTimeout thực sự chạy.
+                const lockedMatch = currentMatch;
+                const lockedTarget = targetScore;
 
                 setTimeout(() => {
-                    if (currentMatch === TOTAL_MATCHES) {
-                        const finalTarget = TOTAL_MATCHES * 21;
-                        const winner = total1 >= finalTarget ? "ĐỘI 1" : "ĐỘI 2";
-                        alert(`🏆 XONG! TRẬN CHUNG KẾT ĐÃ KẾT THÚC!\nChúc mừng ${winner} đã đạt mốc ${finalTarget} và giành chiến thắng chung cuộc toàn giải! 🎉`);
+                    if (lockedMatch === TOTAL_MATCHES) {
+                        const winner = total1 >= lockedTarget ? "ĐỘI 1" : "ĐỘI 2";
+                        alert(`🏆 XONG! TRẬN CHUNG KẾT ĐÃ KẾT THÚC!\nChúc mừng ${winner} đã đạt mốc ${lockedTarget} và giành chiến thắng chung cuộc toàn giải! 🎉`);
                         currentMatch = TOTAL_MATCHES + 1;
+                        saveAllData();
                     } else {
-                        alert(`🛑 STOP! Trận ${currentMatch} đã chạm mốc ${targetScore} điểm!\n\nVui lòng đổi người, bấm OK để mở khóa đếm điểm cho Trận ${currentMatch + 1}.`);
-                        currentMatch++;
+                        alert(`🛑 STOP! Trận ${lockedMatch} đã chạm mốc ${lockedTarget} điểm!\n\nVui lòng đổi người, bấm OK để mở khóa đếm điểm cho Trận ${lockedMatch + 1}.`);
+                        currentMatch = lockedMatch + 1;
                         isMatchLocked = false;
                         updateNames();
                         saveAllData();
