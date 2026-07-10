@@ -7,13 +7,17 @@
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f6f9; color: #333; padding: 15px; margin: 0; }
         .container { max-width: 840px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #1e3a8a; margin-bottom: 5px; font-size: 24px; text-transform: uppercase; }
+        h1 { text-align: center; color: #1e3a8a; margin-bottom: 5px; font-size: 24px; text-transform: uppercase; cursor: pointer; user-select: none; }
         h2 { color: #2563eb; border-bottom: 2px solid #e5e7eb; padding-bottom: 5px; font-size: 18px; margin-top: 25px; }
         h3 { color: #1e3a8a; font-size: 15px; margin-top: 15px; margin-bottom: 8px; }
 
         /* Bảng điều khiển bấm điểm chuyên nghiệp */
         .scoreboard-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #0f172a; padding: 20px; border-radius: 10px; margin-top: 15px; text-align: center; color: white; }
-        .score-btn { width: 100%; padding: 15px; font-size: 20px; font-weight: bold; color: white; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s; margin-top: 10px; }
+        .score-actions { display: flex; gap: 10px; margin-top: 10px; }
+        .score-btn { flex: 2; padding: 15px 10px; font-size: 20px; font-weight: bold; color: white; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s; }
+        .minus-btn { flex: 1; padding: 15px 10px; font-size: 20px; font-weight: bold; color: white; background-color: #475569; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s; }
+        .minus-btn:hover { background-color: #334155; }
+        
         .btn-team1 { background-color: #ef4444; }
         .btn-team1:hover { background-color: #dc2626; }
         .btn-team2 { background-color: #10b981; }
@@ -46,8 +50,9 @@
         .badge-namnu { background-color: #ec4899; }
         .badge-nam { background-color: #3b82f6; }
 
-        .btn-reset { display: block; width: 100%; padding: 12px; background: #64748b; color: white; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; text-align: center; margin-top: 20px; }
-        .btn-reset:hover { background: #475569; }
+        /* Ẩn nút reset mặc định */
+        .btn-reset { display: none; width: 100%; padding: 12px; background: #b91c1c; color: white; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; text-align: center; margin-top: 20px; }
+        .btn-reset:hover { background: #991b1b; }
 
         .rule-section { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-top: 15px; font-size: 14px; line-height: 1.6; }
         .rule-section ul, .rule-section ol { margin-top: 5px; padding-left: 20px; }
@@ -62,7 +67,8 @@
 <body>
 
 <div class="container">
-    <h1>🏆 GIẢI CẦU LÔNG ĐỒNG ĐỘI</h1>
+    <!-- Thêm sự kiện click để kích hoạt hiện nút reset -->
+    <h1 onclick="handleTitleClick()">🏆 GIẢI CẦU LÔNG ĐỒNG ĐỘI</h1>
     <p style="text-align: center; margin: 0 0 20px 0; color: #64748b; font-size: 14px;">8 người - Mỗi đội 1 Nữ + 3 Nam - Mỗi người đánh đúng 3 trận - Xen kẽ Đôi Nam Nữ / Đôi Nam Thuần</p>
 
     <h2>1. NHẬP TÊN THÀNH VIÊN TRÊN SÂN</h2>
@@ -90,12 +96,18 @@
         <div>
             <div style="color: #fca5a5; font-weight: bold;">TỔNG ĐIỂM ĐỘI 1</div>
             <div class="display-total" id="live_total_1">0</div>
-            <button class="score-btn btn-team1" onclick="pressScore(1)">+1 ĐỘI 1</button>
+            <div class="score-actions">
+                <button class="minus-btn" onclick="pressScore(1, -1)">-</button>
+                <button class="score-btn btn-team1" onclick="pressScore(1, 1)">+1 Đ1</button>
+            </div>
         </div>
         <div>
             <div style="color: #6ee7b7; font-weight: bold;">TỔNG ĐIỂM ĐỘI 2</div>
             <div class="display-total" id="live_total_2">0</div>
-            <button class="score-btn btn-team2" onclick="pressScore(2)">+1 ĐỘI 2</button>
+            <div class="score-actions">
+                <button class="minus-btn" onclick="pressScore(2, -1)">-</button>
+                <button class="score-btn btn-team2" onclick="pressScore(2, 1)">+1 Đ2</button>
+            </div>
         </div>
     </div>
 
@@ -115,7 +127,6 @@
             </thead>
             <tbody>
                 <script>
-                    // Đã fix lỗi chuỗi HTML ở mảng badges dưới đây giúp không lệch layout
                     const badges = [
                         { class: 'badge-namnu', text: 'Đôi Nam Nữ' },
                         { class: 'badge-nam', text: 'Đôi Nam Thuần' },
@@ -147,7 +158,7 @@
         </table>
     </div>
 
-    <button class="btn-reset" onclick="resetTournament()">🔄 RESET TOÀN BỘ GIẢI ĐẤU (XÓA ĐIỂM VỀ 0)</button>
+    <button id="reset_btn" class="btn-reset" onclick="resetTournament()">🔄 RESET TOÀN BỘ GIẢI ĐẤU (XÓA ĐIỂM VỀ 0)</button>
     <div class="save-status" id="save_status">☁️ Đang kết nối Firebase...</div>
 
     <h2>4. ĐIỀU LỆ ĐẤU & LƯU Ý HỆ THỐNG</h2>
@@ -188,6 +199,17 @@
     let isMatchLocked = false;
     const TOTAL_MATCHES = 6;
     let isApplyingRemoteData = false;
+    let titleClickCount = 0; // Đếm số lần click tiêu đề
+
+    // Hàm xử lý khi click vào Tiêu đề
+    function handleTitleClick() {
+        titleClickCount++;
+        if (titleClickCount >= 20) {
+            document.getElementById('reset_btn').style.display = 'block';
+            alert("🔓 Tính năng nâng cao: Nút Reset giải đấu đã hiển thị ở phía dưới!");
+            titleClickCount = 0; // reset đếm
+        }
+    }
 
     function getPlayerName(id, defaultName) {
         const el = document.getElementById(id);
@@ -244,14 +266,23 @@
         }
     }
 
-    function pressScore(team) {
-        if (currentMatch > TOTAL_MATCHES || isMatchLocked) return;
+    // Cập nhật hàm thay đổi điểm (nhận thêm tham số value: 1 hoặc -1)
+    function pressScore(team, value) {
+        if (currentMatch > TOTAL_MATCHES) return;
+        
+        // Nếu đang bị khóa trận (đợi bấm OK popup mốc điểm), vẫn cho phép trừ điểm xuống để sửa sai và mở khóa lại trận
+        if (isMatchLocked && value > 0) return; 
 
         const inputId = `s${currentMatch}_${team}`;
         const inputEl = document.getElementById(inputId);
         if (inputEl) {
             const currentInputValue = parseInt(inputEl.value) || 0;
-            inputEl.value = currentInputValue + 1;
+            const newValue = currentInputValue + value;
+            
+            // Không cho phép điểm của trận hiện tại giảm xuống dưới 0
+            if (newValue < 0) return;
+
+            inputEl.value = newValue;
             calculateTotal();
             saveAllData();
         }
@@ -271,10 +302,18 @@
         if(document.getElementById('live_total_2')) document.getElementById('live_total_2').innerText = total2;
 
         if (isApplyingRemoteData) return;
-        if (isMatchLocked) return;
 
-        if (currentMatch <= TOTAL_MATCHES && !isMatchLocked) {
+        if (currentMatch <= TOTAL_MATCHES) {
             const targetScore = currentMatch * 21;
+            
+            // Nếu điểm bị trừ xuống thấp hơn mốc đích khi đang bị khóa -> Tự động mở khóa lại trận
+            if (isMatchLocked && total1 < targetScore && total2 < targetScore) {
+                isMatchLocked = false;
+                return;
+            }
+
+            if (isMatchLocked) return;
+
             if (total1 >= targetScore || total2 >= targetScore) {
                 isMatchLocked = true;
                 const lockedMatch = currentMatch;
@@ -358,6 +397,8 @@
             calculateTotal();
             updateNames();
             saveAllData();
+            // Ẩn lại nút reset sau khi đã thực hiện thành công
+            document.getElementById('reset_btn').style.display = 'none';
         }
     }
 
